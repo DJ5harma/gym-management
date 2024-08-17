@@ -1,33 +1,25 @@
 import ErrorComponent from "@/components/ErrorComponent";
-import SendMessageBtn from "@/components/SendMessageBtn";
 import { verifyJwt } from "@/lib/jwt";
 import Link from "next/link";
 import React from "react";
 
 export default function page() {
-	const { userType } = verifyJwt();
-	if (userType !== "ADMIN") return <ErrorComponent />;
+	const { userId, userType } = verifyJwt();
+	if (!userId || userType !== "MEMBER") return <ErrorComponent />;
 	return (
 		<div className="w-full h-full flex-col flex items-center justify-center gap-3 [&>*]:border-2 [&>*]:p-4 [&>*]:rounded-xl">
 			<Link
-				href="/admin/members"
+				href="/messages"
 				className="hover:dark:bg-white hover:dark:text-black hover:bg-black hover:text-white"
 			>
-				Access/Modify Members
+				Check messages
 			</Link>
 			<Link
-				href="/admin/addMember"
+				href="/member/fees"
 				className="hover:dark:bg-white hover:dark:text-black hover:bg-black hover:text-white"
 			>
-				Add a new member
+				Check fees
 			</Link>
-			<Link
-				href="/admin/fees"
-				className="hover:dark:bg-white hover:dark:text-black hover:bg-black hover:text-white"
-			>
-				See all fees
-			</Link>
-			<SendMessageBtn />
 		</div>
 	);
 }

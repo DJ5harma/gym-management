@@ -10,17 +10,18 @@ export default async function page() {
 		const [id, { username, createdAt }] = [member.id, member.data()];
 		return { id, username, createdAt };
 	});
-	console.log(filteredMembers);
 
 	return (
-		<div className="w-full h-full flex flex-col justify-center items-center gap-2">
+		<div className="w-full h-full flex flex-col">
 			{filteredMembers.map((member) => {
 				return (
 					<div
 						key={member.id}
-						className="border-2 flex p-4 gap-2 w-full justify-around items-center flex-col"
+						className="border-2 flex p-4 gap-2 w-full items-center flex-col"
 					>
-						<p className="flex-1 font-semibold">Member: {member.username}</p>
+						<p className="flex-1 font-semibold">
+							Member: {member.id}, {member.username}
+						</p>
 						<p className="flex-1">
 							Joined: {new Date(member.createdAt).toUTCString()}
 						</p>

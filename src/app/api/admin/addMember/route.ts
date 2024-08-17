@@ -1,10 +1,14 @@
 import { db } from "@/lib/firebase";
+import { verifyJwt } from "@/lib/jwt";
 import { genSaltSync, hashSync } from "bcrypt";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest) => {
 	try {
+		const { userType } = verifyJwt();
+		if (userType !== "ADMIN")
+			throw new Error("Only admins can perform this action");
 		const { password, userId, username, confirmPassword } = await req.json();
 		if (password !== confirmPassword) throw new Error("Passwords must match");
 		if (!username || !userId) throw new Error("Please fill all the fields");

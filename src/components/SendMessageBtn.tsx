@@ -4,30 +4,24 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
-const DeleteMemberBtn = ({
-	username,
-	id,
-}: {
-	username: string;
-	id: string;
-}) => {
+const SendMessageBtn = () => {
 	const [confirm, setConfirm] = useState(false);
-	const [typedId, setTypedId] = useState("");
+	const [message, setMessage] = useState("");
 	const [loading, setLoading] = useState(false);
 	const router = useRouter();
-
-	async function deleteMember() {
-		if (typedId !== id) return toast.error("id mismatch!");
+	async function sendMessage() {
+		if (message.length < 6)
+			return toast.error("Message should have atleast 6 characters!");
 		setLoading(true);
-		toast.loading("Deleting member...");
+		toast.loading("Sending message...");
 		const { errMessage } = (
-			await axios.post("/api/admin/deleteMember", { userId: id })
+			await axios.post("/api/admin/sendMessage", { message })
 		).data;
 		toast.dismiss();
 		setLoading(false);
 		if (errMessage) return toast.error(errMessage);
-		toast.success("Deleted member!");
-		setTypedId("");
+		toast.success("Message sent!");
+		setMessage("");
 		setConfirm(false);
 		router.refresh();
 	}
@@ -36,39 +30,36 @@ const DeleteMemberBtn = ({
 			<div
 				className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-black bg-opacity-45 z-20"
 				onClick={() => {
-					setTypedId("");
 					setConfirm(false);
+					setMessage("");
 				}}
 			>
 				<div
-					className="flex p-4 rounded bg-red-700 flex-col text-white gap-2"
+					className="flex p-4 rounded bg-blue-700 flex-col text-white gap-2"
 					onClick={(e) => e.stopPropagation()}
 				>
-					<p className="font-semibold">
-						Type {"<" + id + ">"} to delete {"<" + username + ">"}
-					</p>
+					<p>Message...</p>
 					<input
-						type="text"
-						value={typedId}
-						onChange={(e) => setTypedId(e.target.value)}
-						placeholder="Type the id..."
+						value={message}
+						onChange={(e) => setMessage(e.target.value)}
 						className="p-4 text-black rounded"
+						placeholder="atleast 6 chars"
 					/>
 					{!loading ? (
 						<>
-							{id === typedId && (
+							{message.length >= 6 && (
 								<button
-									className="bg-red-600 text-white p-2 rounded"
-									onClick={deleteMember}
+									className="bg-blue-600 text-white p-2 rounded"
+									onClick={sendMessage}
 								>
-									Delete Member
+									Send
 								</button>
 							)}
 							<button
 								className=" text-white p-2 rounded"
 								onClick={() => {
 									setConfirm(false);
-									setTypedId("");
+									setMessage("");
 								}}
 							>
 								Cancel
@@ -82,12 +73,12 @@ const DeleteMemberBtn = ({
 		);
 	return (
 		<button
-			className="bg-red-600 text-white p-2 rounded"
+			className="bg-blue-600 text-white p-2 rounded"
 			onClick={() => setConfirm(true)}
 		>
-			Delete Member
+			Send a message
 		</button>
 	);
 };
 
-export default DeleteMemberBtn;
+export default SendMessageBtn;

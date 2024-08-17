@@ -14,10 +14,12 @@ import toast from "react-hot-toast";
 export interface CUser {
 	username: string;
 	userId: string;
+	createdAt: number;
 }
 export const sampleUser: CUser = {
 	username: "",
 	userId: "",
+	createdAt: NaN,
 };
 const context = createContext<{
 	user: CUser;
@@ -48,6 +50,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 		setUser(user);
 		if (userType === "ADMIN") router.push("/admin");
 		else if (userType === "MEMBER") router.push("/member");
+
 		toast.success(`Logged in automatically as ${user.username}`);
 	};
 	useEffect(() => {

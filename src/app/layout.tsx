@@ -22,10 +22,8 @@ export default function RootLayout({
 			<body className={inter.className}>
 				<Toaster />
 				<UserProvider>
-					<div className="w-screen h-screen">
-						<NavButtons />
-						{children}
-					</div>
+					<NavButtons />
+					<div className="w-screen h-screen">{children}</div>
 				</UserProvider>
 			</body>
 		</html>

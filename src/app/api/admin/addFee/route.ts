@@ -1,6 +1,6 @@
 import { db } from "@/lib/firebase";
 import { verifyJwt } from "@/lib/jwt";
-import { deleteDoc, doc } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -9,11 +9,18 @@ export const POST = async (req: NextRequest) => {
 		const { userType } = verifyJwt();
 		if (userType !== "ADMIN")
 			throw new Error("Only admins can perform this action");
-		const { userId } = await req.json();
+		const { userId, username, deadline, amount, reason } = await req.json();
 
-		const docRef = doc(db, "members", userId);
-		await deleteDoc(docRef);
-		revalidatePath("/admin/members");
+		const deadlineDate = Date.now() + deadline * 24 * 60 * 60 * 1000;
+		await addDoc(collection(db, "fees"), {
+			amount,
+			reason,
+			deadlineDate,
+			userId,
+			username,
+			paid: false,
+		});
+		revalidatePath("/admin/fees");
 		return NextResponse.json({});
 	} catch (error) {
 		return NextResponse.json({

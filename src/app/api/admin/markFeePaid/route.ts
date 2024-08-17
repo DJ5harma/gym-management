@@ -1,6 +1,6 @@
 import { db } from "@/lib/firebase";
 import { verifyJwt } from "@/lib/jwt";
-import { deleteDoc, doc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -9,11 +9,13 @@ export const POST = async (req: NextRequest) => {
 		const { userType } = verifyJwt();
 		if (userType !== "ADMIN")
 			throw new Error("Only admins can perform this action");
-		const { userId } = await req.json();
+		const { feeId } = await req.json();
 
-		const docRef = doc(db, "members", userId);
-		await deleteDoc(docRef);
-		revalidatePath("/admin/members");
+		const feeRef = doc(db, "fees", feeId);
+		const feeDoc = await getDoc(feeRef);
+		if (!feeDoc.exists()) throw new Error("Fee not found");
+		await updateDoc(feeRef, { paid: true });
+		revalidatePath("/admin/fees");
 		return NextResponse.json({});
 	} catch (error) {
 		return NextResponse.json({

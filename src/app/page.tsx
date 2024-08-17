@@ -22,7 +22,18 @@ export default function Home() {
 		toast.success("Logged in as admin");
 		router.push("/admin");
 	}
-	async function loginMember() {}
+	async function loginMember() {
+		setLoading(true);
+		toast.loading("Logging you in...");
+		const { errMessage, username } = (
+			await axios.post("/api/auth/member", user)
+		).data;
+		setLoading(false);
+		toast.dismiss();
+		if (errMessage) return toast.error(errMessage);
+		toast.success("Logged in as " + username);
+		router.push("/member");
+	}
 
 	return (
 		<main className="w-full h-full flex justify-center items-center flex-col gap-2">
