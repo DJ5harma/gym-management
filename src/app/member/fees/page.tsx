@@ -14,10 +14,11 @@ export default async function page() {
 		const { paid, amount, reason, deadlineDate } = doc.data();
 		return { id: doc.id, paid, amount, reason, deadlineDate };
 	});
+	if (fees.length === 0) return <ErrorComponent message="No fees till now" />;
 
 	return (
 		<div className="w-full h-full flex flex-col">
-			{fees.map(({ amount, deadlineDate, id, paid, reason }) => {
+			{fees.reverse().map(({ amount, deadlineDate, id, paid, reason }) => {
 				return (
 					<div
 						key={id}

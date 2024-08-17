@@ -9,14 +9,10 @@ export default async function page() {
 	if (!userType) return <ErrorComponent />;
 	const messages = await getDocs(collection(db, "messages"));
 	if (messages.docs.length === 0)
-		return (
-			<div className="w-full h-full flex-col flex items-center justify-center">
-				No messages till now
-			</div>
-		);
+		return <ErrorComponent message="No messages till now" />;
 	return (
 		<div className="w-full h-full flex flex-col">
-			{messages.docs.map((doc) => {
+			{messages.docs.reverse().map((doc) => {
 				const { message, createdAt } = doc.data();
 				return (
 					<div

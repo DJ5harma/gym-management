@@ -1,5 +1,6 @@
 import AddFeeBtn from "@/components/AddFeeBtn";
 import DeleteMemberBtn from "@/components/DeleteMemberBtn";
+import ErrorComponent from "@/components/ErrorComponent";
 import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import React from "react";
@@ -10,10 +11,12 @@ export default async function page() {
 		const [id, { username, createdAt }] = [member.id, member.data()];
 		return { id, username, createdAt };
 	});
+	if (filteredMembers.length === 0)
+		return <ErrorComponent message="No members till now" />;
 
 	return (
 		<div className="w-full h-full flex flex-col">
-			{filteredMembers.map((member) => {
+			{filteredMembers.reverse().map((member) => {
 				return (
 					<div
 						key={member.id}

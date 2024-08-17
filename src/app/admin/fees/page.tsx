@@ -12,7 +12,7 @@ export default async function page() {
 	const fees = await getDocs(collection(db, "fees"));
 	return (
 		<div className="w-full h-full flex flex-col">
-			{fees.docs.map((fee) => {
+			{fees.docs.reverse().map((fee) => {
 				const { username, userId, paid, deadlineDate, amount, reason } =
 					fee.data();
 				return (
