@@ -27,6 +27,12 @@ export default function page() {
 			>
 				See all fees
 			</Link>
+			<Link
+				href="/messages"
+				className="hover:dark:bg-white hover:dark:text-black hover:bg-black hover:text-white"
+			>
+				Check messages
+			</Link>
 			<SendMessageBtn />
 		</div>
 	);
